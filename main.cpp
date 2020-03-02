@@ -9,12 +9,6 @@
 #include <sys/stat.h>
 
 
-//
-// сделать архивацию папок И разархивацию
-//
-//
-// запись характеристик в файл
-//
 namespace fs = std::experimental::filesystem;
 
 //поля хидера
@@ -93,29 +87,29 @@ public:
     //указание пути файлов для архивирования
     virtual void filePlace(){
 
-        std::cout << "Укажите место нахождение файлов:\n";
+        std::cout << "Indicate the location of the files:\n";
         while (1) {
             std::cin >> filePath;
             if (fs::is_directory(filePath))
                 break;
-            std::cout << "Путь не найден, попробуйте еще раз!\n";
+            std::cout << "No path found, try again!\n";
         }
 
-        std::cout << "Путь найден!\n";
+        std::cout << "The path is found!\n";
 
     };
     //указание пути создание архива
     virtual void tarPlace(){
 
-        std::cout << "Укажите место архивации .tar:\n";
+        std::cout << "Specify the location to archive the file .tar:\n";
         while (1) {
             std::cin >> tarPath;
             if (fs::is_directory(tarPath))
                 break;
-            std::cout << "Путь не найден, попробуйте еще раз!\n";
+            std::cout << "No path found, try again!\n";
         }
 
-        std::cout << "Путь найден!\n";
+        std::cout << "The path is found!\n";
 
     };
     // запись пути файлов в вектор
@@ -125,13 +119,13 @@ public:
             numberFiles++;
             allFilesInDirectory.push_back(runDirectory);
         }
-        std::cout << "Количество файлов для архивации: " << numberFiles << std::endl;
+        std::cout << "Number of files to back up: " << numberFiles << std::endl;
 
     }
     //указание наименование .tar
     void createTarFile(){
 
-        std::cout << "\nУкажите имя tar:\n";
+        std::cout << "\nEnter a file name tar:\n";
         std::cin >> tarName;
         tarName+=".tar";
         std::cout << tarName;
@@ -261,33 +255,33 @@ public:
     //указание место сохранение файла
     virtual void filePlace(){
 
-        std::cout << "Укажите место разархивирование файлов: \n";
+        std::cout << "Indicate the place to unzip files:\n";
         while (1) {
             std::cin >> filePath;
             if (fs::is_directory(filePath))
                 break;
-            std::cout << "Путь не найден, попробуйте еще раз!\n";
+            std::cout << "No path found, try again!\n";
         }
         //доработать
         filePath += "/";
 
-        std::cout << "Путь найден!\n";
+        std::cout << "The path is found!\n";
 
     };
 
     //указание место нахождения .tar
     virtual void tarPlace() override {
 
-        std::cout << "Укажите место нахождения .tar:\n";
+        std::cout << "Specify the location of the files .tar:\n";
         while (1) {
             std::cin >> tarPath;
             if (fs::exists(tarPath))
                 if ( !fs::is_directory(tarPath))
                     break;
-            std::cout << "Путь не найден, попробуйте еще раз!\n";
+            std::cout << "No path found, try again!\n";
         }
 
-        std::cout << "Путь найден!\n";
+        std::cout << "The path is found!\n";
 
     };
 
