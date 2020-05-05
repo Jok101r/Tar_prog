@@ -6,7 +6,7 @@
 
 namespace fs = std::experimental::filesystem;
 
-    bool SeveralFiles::load(std::list<const std::string > &pathToFiles) {}
+    //bool SeveralFiles::load(std::list<const std::string > &pathToFiles) {}
     //добавление File в вектор std::vector<File>
     bool SeveralFiles::loadFiles (File  &file)  {
 

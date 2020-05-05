@@ -35,7 +35,9 @@ int main(int argc, char* argv[])
 
                 if (archiveFile.isValid())
                 {
-                    if (archiveFile.save(pathToResultFile))
+                    auto pathTar = gui.nameCreateTar(pathToResultFile);
+
+                    if (archiveFile.save(pathTar))
                     {
                         gui.writeLine("Ok");
                     }

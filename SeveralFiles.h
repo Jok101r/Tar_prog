@@ -20,7 +20,7 @@ private:
     std::vector<File> m_files;
 
 public:
-    bool load(std::list<const std::string> & );
+    //bool load(std::list<const std::string> & );
     bool loadFiles (File  & ) ;
 
     bool load(const std::string & );

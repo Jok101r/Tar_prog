@@ -24,6 +24,8 @@ enum Key{
 class GUI {
 private:
 
+
+    std::string m_archiveFileName;
     std::string m_path;
     std::vector<Key> m_keys {ARCHIVE_TAR, UNARCHIVE_TAR};
     const char *m_aruments[];
@@ -33,7 +35,7 @@ public:
 
     void writeLine(const std::string line) { std::cout << line << std::endl; }
     std::string writeLine();
-
+    std::string nameCreateTar(const std::string &);
     void parseArgs(int argc, char *argv[]);
     Key keys();
     fs::path loadLine(bool );

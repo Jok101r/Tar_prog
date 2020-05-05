@@ -6,8 +6,24 @@
 
     //загрузка пути файла
     bool File::load(const std::string &pathToFile) {
-        m_pathFile = pathToFile;
-        return true;
+
+
+        if (!pathToFile.empty()) {
+
+            m_pathFile = pathToFile;
+            //как-то коряво и правильно ли
+
+            std::fstream file(m_pathFile);
+            char *buffer = new char[1];
+            while (!file.eof()) {
+                file.read(buffer, 1);
+                m_dataFile.push_back(*buffer);
+            }
+            delete[] buffer;
+
+            return true;
+        }
+        return false;
     }
 
     //загрузка данных в File
@@ -49,26 +65,27 @@
     }
 
     //архивация файлов по методу .tar
-    bool File::save(const std::string &pathToFile){
+    bool File::save(const std::string &pathTar){
 
-    //тут я не уверен
-        std::cout << "\nEnter a file name tar:\n";
-        std::cin >> m_archiveFileName;
-        m_archiveFileName+=".tar";
+    //так можно? пока еще плохо понимаю как исключения использоваться
 
-        m_archiveFileName = pathToFile + m_archiveFileName;
-        std::ofstream archiveFile(m_archiveFileName);
-        for ( auto &run : m_dataFile)
+    try {
+        std::ofstream archiveFile(pathTar);
+        for (auto &run : m_dataFile)
             archiveFile << run;
         archiveFile.close();
-
         return true;
+    }
+    catch (...){
 
+        return false;
+
+    }
 
     }
 
     //получение данных по пути
-    std::vector<char> File::dataToPath() {
+    /*std::vector<char> File::dataToPath() {
 
         //как-то коряво и правильно ли
         std::fstream file(m_pathFile);
@@ -80,7 +97,7 @@
         delete[] buffer;
         return m_dataFile;
     }
-
+*/
     //проверка на существование файла
     bool File::isValid() const {
 

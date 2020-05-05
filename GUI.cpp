@@ -51,3 +51,15 @@ fs::path GUI::loadLine(bool is_directory) {
 
 }
 
+std::string GUI::nameCreateTar(const std::string &pathToResultFile){
+
+    std::cout << "\nEnter a file name tar:\n";
+    std::cin >> m_archiveFileName;
+    m_archiveFileName+=".tar";
+
+    m_archiveFileName = pathToResultFile + m_archiveFileName;
+
+    return m_archiveFileName;
+
+}
+

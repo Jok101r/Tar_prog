@@ -10,7 +10,7 @@ void recordFieldFiles(std::byte *fN, std::string fieldFiles){
 
     for (int a = 0; a < fieldFiles.length(); a++) {
 
-        char prob = fieldFiles[a];
+        //char prob = fieldFiles[a];
         fN[a] = static_cast<std::byte>(fieldFiles[a]);
 
     }
@@ -40,19 +40,11 @@ void TarArchive::recordFieldToFile(const std::byte *fN, const int size_fN){
 }
 void TarArchive::recordFieldToFile(const fs::path &pathFile ){
 
-    std::fstream readInputFiles(pathFile);
 
-    char *buffer = new char[1];
-    while (!readInputFiles.eof()) {
-        // побайтовая запись файла
-        readInputFiles.read(buffer, 1);
-        m_fileTar.push_back(*buffer);
-
-    }
-    delete[] buffer;
-
-    readInputFiles.close();
-
+    File file_;
+    file_.load(pathFile);
+    for(int runVec =0; runVec < file_.data().size(); runVec++ )
+        m_fileTar.push_back(file_.data()[runVec]);
 
 }
 
@@ -148,7 +140,7 @@ void TarArchive::parsingTar(){
 
     // пытался использоваться итеарторы, но не получилось
     //std::vector<char>::iterator run;
-    m_file.dataToPath();
+    //m_file.dataToPath();
     //run = m_file.data(true).begin();
     //while (run != m_file.data(true).end() ) {
 

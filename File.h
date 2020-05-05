@@ -12,7 +12,7 @@
 #include <map>
 
 namespace fs = std::experimental::filesystem;
-struct Field_name{
+struct MetaData{
 
     std::byte name[100] {0x0}; //имя файла (вместе с разширением)
     std::byte mode[8] {0x0}; //права доступа на файл (chmod)
@@ -29,8 +29,7 @@ private:
 
     std::string m_pathFile;
     std::vector<char> m_dataFile;
-    std::string m_archiveFileName;
-    Field_name m_fieldName;
+    MetaData m_fieldName;
     std::map<std::byte*, int> m_metaData {
             {m_fieldName.name, 100},
             {m_fieldName.mode, 8},
@@ -48,13 +47,13 @@ public:
     bool load(const std::vector<char> & );
     bool loadDataField(std::map<std::byte*, int> &, const std::vector<char> &);
     bool save(const std::string & );
-    std::vector<char> dataToPath();
+    //std::vector<char> dataToPath();
     std::vector<char> data() {return m_dataFile; }
     bool isValid() const;
 
     fs::path getPathFile() { return m_pathFile; }
     std::map<std::byte*, int> getMetaData() { return m_metaData; }
-    Field_name getFieldName() {return m_fieldName; }
+    MetaData getFieldName() {return m_fieldName; }
 
 
 };

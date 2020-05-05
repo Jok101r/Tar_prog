@@ -22,7 +22,7 @@
 class TarArchive: public IArchive {
 
 private:
-    Field_name m_fieldName;
+    MetaData m_fieldName;
     std::map<std::byte*, int> m_fieldNameVec {
             {m_fieldName.name, 100},
             {m_fieldName.mode, 8},
