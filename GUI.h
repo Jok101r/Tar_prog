@@ -1,16 +1,14 @@
 //
 // Created by Aleksandr Akumyanskiy on 11.04.2020.
 //
-
-#ifndef TAR_PROG_GUI_H
-#define TAR_PROG_GUI_H
+#pragma once
 
 #include <iostream>
 #include <vector>
 #include <cstring>
 #include <experimental/filesystem>
 
-namespace fs = std::experimental::filesystem;
+//namespace fs = std::experimental::filesystem;
 
 //ключи управления утилитой
 enum Key{
@@ -29,7 +27,6 @@ private:
     std::string m_path;
     std::vector<Key> m_keys {ARCHIVE_TAR, UNARCHIVE_TAR};
     const char *m_aruments[];
-    //std::vector <char> m_aruments;
 
 public:
 
@@ -38,8 +35,6 @@ public:
     std::string nameCreateTar(const std::string &);
     void parseArgs(int argc, char *argv[]);
     Key keys();
-    fs::path loadLine(bool );
+    std::string loadLine(bool );
 
 };
-
-#endif //TAR_PROG_GUI_H

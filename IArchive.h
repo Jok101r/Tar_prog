@@ -11,8 +11,8 @@
 class IArchive{
 
 public:
-    virtual bool append(const File &) = 0;
-    virtual bool append(const SeveralFiles &) = 0;
+    virtual void append(const File &) = 0;
+    virtual void append(const SeveralFiles &) = 0;
     virtual File archive() = 0;
     virtual SeveralFiles unarchive() = 0;
 

@@ -2,8 +2,7 @@
 // Created by Aleksandr Akumyanskiy on 11.04.2020.
 //
 
-#ifndef TAR_PROG_TARARCHIVE_H
-#define TAR_PROG_TARARCHIVE_H
+#pragma once
 
 #include "IArchive.h"
 #include <iostream>
@@ -58,14 +57,12 @@ private:
 public:
 
 //    //по штучный разбор файлов для архивирования
-//    void archiveFiles();
 
-    virtual bool append(const File &);
-    virtual bool append(const SeveralFiles &);
+    virtual void append(const File &);
+    virtual void append(const SeveralFiles &);
     virtual File archive();
     virtual SeveralFiles unarchive();
 
 
 };
 
-#endif //TAR_PROG_TARARCHIVE_H

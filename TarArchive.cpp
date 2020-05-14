@@ -69,7 +69,6 @@ void TarArchive::recordTar(const fs::path &pathFile){
 
     recordFieldFiles(m_fieldName.name, pathFile.filename());
 
-    //std::cout << "\n" << tete(m_fieldName.name, 100);
     recordFieldFiles(m_fieldName.mode, static_cast<int>(static_cast<fs::perms>( fs::status( pathFile ).permissions() ) ) );
 
     struct stat info;
@@ -85,7 +84,7 @@ void TarArchive::recordTar(const fs::path &pathFile){
     std::time_t ctime = fs::file_time_type::clock::to_time_t(timePoint);
     recordFieldFiles(m_fieldName.mtime, static_cast<int>(ctime));
 
-    recordFieldFiles(m_fieldName.link, (fs::is_directory(pathFile) ? 5 : 0) );
+    recordFieldFiles(m_fieldName.link, (fs::is_directory(pathFile) ? 0 : 1) );
 
    //запись блока хидера (fieldName) в вектор std::vector<File>
     for (auto &p : m_fieldNameVec)
@@ -174,7 +173,7 @@ void TarArchive::parsingTar(){
         File fileWithField;
 
         //загрука метаданных в хидер файла
-        fileWithField.loadDataField(m_fieldNameVec, fileChar);
+        fileWithField.loadDataField(m_fieldName, fileChar);
         if(!m_archiveFileTar.loadFiles(fileWithField))
             std::cout << "Something wrong. Sorry. Error 1-0";
 
@@ -189,20 +188,14 @@ void TarArchive::parsingTar(){
 }
 
 //добавление File в класс TarArchive
-bool TarArchive::append(const File &file) {
+void TarArchive::append(const File &file) {
 
-    //правильно ли тут?
     m_file = file;
-
-    return true;
-
 }
 //добавление SeveralFile в класс TarArchive
-bool TarArchive::append(const SeveralFiles &severalFiles) {
+void TarArchive::append(const SeveralFiles &severalFiles) {
 
-    //правильно ли тут?
     m_archiveFileTar = severalFiles;
-    return true;
 }
 
 //архивация файлов по методу .tar

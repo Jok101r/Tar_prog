@@ -27,25 +27,9 @@ Key GUI::keys(){
 
 //взаимодействие с пользованием
 //загрузка пути
-fs::path GUI::loadLine(bool is_directory) {
+std::string GUI::loadLine(bool is_directory) {
 
-    while (1) {
-
-        std::cin >> m_path;
-
-        //некорретно отображает место разархивации, нужно указать в конце '\'
-        if (is_directory)
-            if (fs::is_directory(m_path))
-                break;
-
-        if (!is_directory)
-            if (!fs::is_directory(m_path))
-                break;
-
-        std::cout << "No path found, try again!\n";
-    }
-
-    std::cout << "The path is found!\n";
+    std::cin >> m_path;
 
     return m_path;
 
