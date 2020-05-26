@@ -6,13 +6,14 @@
 
 
 
-int main(int argc, char* argv[])
+
+int main(int argc, const char** argv)
 {
     GUI gui;
-    gui.writeLine("Wellcome");
-    gui.writeLine("Select program functionality:\n");
-    gui.writeLine(" 'Atar'  file archiving");
-    gui.writeLine(" 'Untar' file unarchiving");
+    //gui.writeLine("Wellcome");
+    //gui.writeLine("Select program functionality:\n");
+    //gui.writeLine(" 'Atar'  file archiving");
+    //gui.writeLine(" 'Untar' file unarchiving");
     gui.parseArgs(argc, argv);
 
     switch (gui.keys())

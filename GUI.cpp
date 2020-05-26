@@ -4,13 +4,44 @@
 
 #include "GUI.h"
 
-//чтение данных из командной строки
-void GUI::parseArgs(int argc, char *argv[]) {
+static const char USAGE[] =
+        R"(Tar_prog.
 
-    for (int count = 0; count < argc; ++count) {
+    Usage:
+      Tar_prog -a  file archiving
+      Tar_prog -untar file unarchiving
+      Tar_prog (-h | --help)
+      Tar_prog (-v | --version)
+
+    Options:
+      -a
+      -h --help        Show this screen.
+      -v --version     Show version.
+)";
+
+//чтение данных из командной строки
+void GUI::parseArgs(int argc, const char** argv) {
+
+    std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
+                                                               { argv + 1, argv + argc },
+                                                               true,               // show help if requested
+                                                               "Archive 1.0");  // version string
+
+
+    for(auto const& arg : args) {
+        std::cout << arg.first << ": " << arg.second << std::endl;
+        if(arg.first.find("-a") || arg.first.find("-untar"))
+            m_aruments += arg.first;
+        arg.second.
+    }
+
+
+
+    /*for (int count = 0; count < argc; ++count) {
         std::cout << count << " " << argv[count] << '\n';
         m_aruments[count] = argv[count] ;
     }
+     */
 
 }
 
@@ -18,10 +49,17 @@ void GUI::parseArgs(int argc, char *argv[]) {
 Key GUI::keys(){
 
 
-    if (strcmp(m_aruments[1],"atar") == 0)
+//    if (strcmp(m_aruments[1],"atar") == 0)
+//        return m_keys[0];
+//    if (strcmp(m_aruments[1],"untar") == 0)
+//        return m_keys[1];
+    if(m_aruments == "-a")
         return m_keys[0];
-    if (strcmp(m_aruments[1],"untar") == 0)
+
+    if(m_aruments == "-untar")
         return m_keys[1];
+
+
 
 }
 
