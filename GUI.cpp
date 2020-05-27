@@ -14,7 +14,6 @@ static const char USAGE[] =
       Tar_prog (-v | --version)
 
     Options:
-      -a
       -h --help        Show this screen.
       -v --version     Show version.
 )";
