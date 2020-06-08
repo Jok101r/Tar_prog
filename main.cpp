@@ -10,53 +10,29 @@
 int main(int argc, const char** argv)
 {
     GUI gui;
-    //gui.writeLine("Wellcome");
-    //gui.writeLine("Select program functionality:\n");
-    //gui.writeLine(" 'Atar'  file archiving");
-    //gui.writeLine(" 'Untar' file unarchiving");
     gui.parseArgs(argc, argv);
+
+
 
     switch (gui.keys())
     {
 
+
         case Key::ARCHIVE_TAR:
         {
             File file;
-            gui.writeLine("Enter path to dir with files to archive:");
-
-            //переделал раздел
-            std::string pathToDir = "";
-            while(1) {
-
-                pathToDir = gui.loadLine(true);
-
-                if(file.isDirectory(pathToDir) == false)
-                    gui.writeLine("No path found, try again!\n");
-                if(file.isDirectory(pathToDir) == true){
-                    gui.writeLine("The path is found!\n");
-                    break;
-                }
-            }
-
-            gui.writeLine("Enter path to result file:");
-
-            //
-            std::string pathToResultFile = "";
-            while(1) {
-
-                pathToResultFile = gui.loadLine(true);
-
-                if(file.isDirectory(pathToResultFile) == false)
-                    gui.writeLine("No path found, try again!\n");
-                if(file.isDirectory(pathToResultFile) == true) {
-                    gui.writeLine("The path is found!\n");
-                    break;
-                }
-            }
-
-
             SeveralFiles files;
-            if (files.load(pathToDir))
+            if (!file.isDirectory(gui.getMPathToFiles())){
+                gui.writeLine(gui.getMPathToFiles());
+                gui.writeLine("It's not directory. Try again.\n");
+                break;
+            }
+            if (!file.isDirectory(gui.getMPathToSave())){
+                gui.writeLine(gui.getMPathToFiles());
+                gui.writeLine("It's not directory. Try again.\n");
+                break;
+            }
+            if(files.load(gui.getMPathToFiles()))
             {
                 TarArchive archive;
                 archive.append(files);
@@ -65,7 +41,8 @@ int main(int argc, const char** argv)
 
                 if (archiveFile.isValid())
                 {
-                    auto pathTar = gui.nameCreateTar(pathToResultFile);
+                    //исправить
+                    auto pathTar = gui.getMPathToSave()+gui.getMNameFileArh()+".tar";
 
                     if (archiveFile.save(pathTar))
                     {
@@ -81,50 +58,42 @@ int main(int argc, const char** argv)
                 {
                     gui.writeLine("Something wrong. Sorry");
                 }
-            }
+            }else {gui.writeLine("Something wrong. Sorry");}
 
         };
         break;
         case Key::UNARCHIVE_TAR:
         {
             File file;
-            std::string pathToArchiveFile;
-            while(1) {
-                gui.writeLine("Enter path to archive-file:");
-                pathToArchiveFile = gui.loadLine(false);
 
-                if(file.isDirectory(pathToArchiveFile) == true)
-                    gui.writeLine("No path found, try again!\n");
-                if(file.isDirectory(pathToArchiveFile) == false) {
-                    gui.writeLine("The path is found!\n");
-                    break;
-                }
+            TarArchive archive;
+            if (file.isDirectory(gui.getMPathToFile())){
+                gui.writeLine(gui.getMPathToFile());
+                gui.writeLine("It's not file .tar Try again.\n");
+                break;
+
+            }
+            if(!archive.isTar(gui.getMPathToFile())) {
+                gui.writeLine(gui.getMPathToFile());
+                gui.writeLine("It's not file .tar Try again.\n");
+                break;
             }
 
-            gui.writeLine("Enter path to result dir:");
-            std::string pathToResultDir;
-            while(1) {
-
-                pathToResultDir = gui.loadLine(true);
-
-                if(file.isDirectory(pathToResultDir) == false)
-                    gui.writeLine("No path found, try again!\n");
-                if(file.isDirectory(pathToResultDir) == true) {
-                    gui.writeLine("The path is found!\n");
-                    break;
-                }
+            if (!file.isDirectory(gui.getMPathToFiles())){
+                gui.writeLine(gui.getMPathToFiles());
+                gui.writeLine("It's not directory. Try again.\n");
+                break;
             }
 
-            if (file.load(pathToArchiveFile))
+            if (file.load(gui.getMPathToFile()))
             {
-                TarArchive archive;
                 archive.append(file);
                 auto resultFiles = archive.unarchive();
                 if (resultFiles.isValid(resultFiles))
                 {
 
 
-                    if (resultFiles.save(pathToResultDir))
+                    if (resultFiles.save(gui.getMPathToFiles()))
                     {
                         gui.writeLine("Ok");
                     }

@@ -58,6 +58,7 @@ public:
 
 //    //по штучный разбор файлов для архивирования
 
+    bool isTar(const std::string &);
     virtual void append(const File &);
     virtual void append(const SeveralFiles &);
     virtual File archive();

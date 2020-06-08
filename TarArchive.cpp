@@ -217,6 +217,20 @@ SeveralFiles TarArchive::unarchive() {
     return m_archiveFileTar;
 }
 
+bool TarArchive::isTar(const std::string &pathToTar) {
+
+    const std::string sampleTar = ".tar";
+    std::string proba = "";
+    for(int i = pathToTar.length()-4 ; i < pathToTar.length() ; ++i){
+        proba += pathToTar[i];
+    }
+
+    if(sampleTar == proba)
+        return true;
+
+    return false;
+}
+
 
 
 
