@@ -12,6 +12,7 @@
 #include <experimental/filesystem>
 #include <map>
 #include <utility>
+#include <sstream>
 
 class SeveralFiles{
 private:

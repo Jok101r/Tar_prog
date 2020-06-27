@@ -4,35 +4,29 @@
 #include "TarArchive.h"
 #include "GUI.h"
 
-
-
-
+namespace  fs = std::filesystem;
 int main(int argc, const char** argv)
 {
     GUI gui;
-    gui.parseArgs(argc, argv);
+    GUI::EntredArgs args = gui.parseArgs(argc, argv);
 
-
-
-    switch (gui.keys())
+    switch (gui.keys(args))
     {
-
-
         case Key::ARCHIVE_TAR:
         {
             File file;
             SeveralFiles files;
-            if (!file.isDirectory(gui.getMPathToFiles())){
-                gui.writeLine(gui.getMPathToFiles());
+            if (!fs::is_directory(args.atar.pathToFiles) ) {
+                gui.writeLine(args.atar.pathToFiles);
                 gui.writeLine("It's not directory. Try again.\n");
                 break;
             }
-            if (!file.isDirectory(gui.getMPathToSave())){
-                gui.writeLine(gui.getMPathToFiles());
+            if (!fs::is_directory(args.atar.pathToSave)){
+                gui.writeLine(args.atar.pathToSave);
                 gui.writeLine("It's not directory. Try again.\n");
                 break;
             }
-            if(files.load(gui.getMPathToFiles()))
+            if(files.load(args.atar.pathToFiles))
             {
                 TarArchive archive;
                 archive.append(files);
@@ -42,7 +36,7 @@ int main(int argc, const char** argv)
                 if (archiveFile.isValid())
                 {
                     //исправить
-                    auto pathTar = gui.getMPathToSave()+gui.getMNameFileArh()+".tar";
+                    auto pathTar = args.atar.pathToSave+args.atar.pathToFile+".tar";
 
                     if (archiveFile.save(pathTar))
                     {
@@ -67,25 +61,25 @@ int main(int argc, const char** argv)
             File file;
 
             TarArchive archive;
-            if (file.isDirectory(gui.getMPathToFile())){
-                gui.writeLine(gui.getMPathToFile());
+            if (fs::is_directory(args.untar.pathToFile)){
+                gui.writeLine(args.untar.pathToFile);
                 gui.writeLine("It's not file .tar Try again.\n");
                 break;
 
             }
-            if(!archive.isTar(gui.getMPathToFile())) {
-                gui.writeLine(gui.getMPathToFile());
+            if(!archive.isTar(args.untar.pathToFile)) {
+                gui.writeLine(args.untar.pathToFile);
                 gui.writeLine("It's not file .tar Try again.\n");
                 break;
             }
 
-            if (!file.isDirectory(gui.getMPathToFiles())){
-                gui.writeLine(gui.getMPathToFiles());
+            if (!fs::is_directory(args.untar.pathToFolder)){
+                gui.writeLine(args.untar.pathToFolder);
                 gui.writeLine("It's not directory. Try again.\n");
                 break;
             }
 
-            if (file.load(gui.getMPathToFile()))
+            if (file.load(args.untar.pathToFile))
             {
                 archive.append(file);
                 auto resultFiles = archive.unarchive();
@@ -93,7 +87,7 @@ int main(int argc, const char** argv)
                 {
 
 
-                    if (resultFiles.save(gui.getMPathToFiles()))
+                    if (resultFiles.save(args.untar.pathToFolder))
                     {
                         gui.writeLine("Ok");
                     }

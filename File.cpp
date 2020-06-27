@@ -57,8 +57,6 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
         if (!pathToFile.empty()) {
 
             m_pathFile = pathToFile;
-            //как-то коряво и правильно ли
-
             std::fstream file(m_pathFile);
             char *buffer = new char[1];
             while (!file.eof()) {
@@ -86,28 +84,12 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
 
         for (int run = 0; run < file.size(); run++)
             m_dataFile.push_back(file[run]);
-
-        //не работает
         m_fieldName = metaData;
-
-        /*std::map<std::byte*, int>::iterator one;
-        one = m_metaData.begin();
-        std::map<std::byte*, int>::iterator two;
-        two = metaData.begin();
-
-        while(two != metaData.end()) {
-            joinTo((*one).first, (*two).first, (*two).second );
-            two++;
-            one++;
-        }
-         */
         return true;
     }
 
     //архивация файлов по методу .tar
     bool File::save(const std::string &pathTar){
-
-    //так можно? пока еще плохо понимаю как исключения использоваться
 
     try {
         std::ofstream archiveFile(pathTar);
@@ -131,22 +113,13 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
             //не знаю как обойти этот момент
             int a;
             std::string b;
-            //int size_file = byteToType(a, file.m_fieldName.size, sizeof(file.m_fieldName.size) / sizeof(file.m_fieldName.size[0]));
-
-            //почему нельзя использоваться? file.m_fieldName.name
             std::string name_file = byteToType(b, m_fieldName.name,
                     sizeof(file.m_fieldName.name) / sizeof(file.m_fieldName.name[0]) );
-
-
-            //int runToBuffer=0;
             {
                 std::ofstream newFile(pathToDir + name_file);
                 for (auto &run : m_dataFile)
                     newFile << run;
                 newFile.close();
-
-                //newFile.write(bufferFile,size_file);
-                //delete [] bufferFile;
             }
 
             fs::permissions(pathToDir + name_file,

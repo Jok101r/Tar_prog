@@ -9,7 +9,7 @@
     std::pair<int,bool> checkNumberFiles(int inputNumber){
 
         std::pair<int,bool> result {0, false };
-        if(!inputNumber <= 0)
+        if((!inputNumber) <= 0)
             result = std::pair<int,bool> {inputNumber, true};
 
         return result;

@@ -137,16 +137,6 @@ int TarArchive::multiplicity512(int sizeFile){
 // отделение самого файла
 void TarArchive::parsingTar(){
 
-    // пытался использоваться итеарторы, но не получилось
-    //std::vector<char>::iterator run;
-    //m_file.dataToPath();
-    //run = m_file.data(true).begin();
-    //while (run != m_file.data(true).end() ) {
-
-    //тут пришлось поменять итератор на простой цикл
-    // не совпадает std::distance(m_file.data(true).begin(), m_file.data(true).end())  c m_file.data(true).size()
-    // причем цифра дистанца в разы больше размера
-    // почему не понятно
     for(int run = 0; run < m_file.data().size()-1; run++){
 
         //кажется костыль

@@ -9,19 +9,20 @@
 #include <experimental/filesystem>
 #include <fstream>
 #include <map>
+#include <sstream>
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 struct MetaData{
 
-    std::byte name[100] {0x0}; //имя файла (вместе с разширением)
-    std::byte mode[8] {0x0}; //права доступа на файл (chmod)
-    std::byte uid[8] {0x0}; //ID пользователя
-    std::byte gid[8] {0x0}; //ID группы
-    std::byte size[12] {0x0};  //размер файла
-    std::byte mtime[12] {0x0}; // время последнего изменения
-    std::byte chkSum[8] {0x0}; // проверка суммы
-    std::byte link[1] {0x0}; // файл or директория
-    std::byte linkName[100] {0x0};
+    std::byte name[100]; //имя файла (вместе с разширением)
+    std::byte mode[8]; //права доступа на файл (chmod)
+    std::byte uid[8]; //ID пользователя
+    std::byte gid[8]; //ID группы
+    std::byte size[12];  //размер файла
+    std::byte mtime[12]; // время последнего изменения
+    std::byte chkSum[8]; // проверка суммы
+    std::byte link[1]; // файл or директория
+    std::byte linkName[100];
 
     struct MetaData &operator=(const MetaData *metaData);
 };
