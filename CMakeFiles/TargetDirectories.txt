@@ -1,0 +1,3 @@
+/Users/aleksandrakumyanskiy/Coding/Project/tar_prog/Tar_prog/CMakeFiles/rebuild_cache.dir
+/Users/aleksandrakumyanskiy/Coding/Project/tar_prog/Tar_prog/CMakeFiles/edit_cache.dir
+/Users/aleksandrakumyanskiy/Coding/Project/tar_prog/Tar_prog/CMakeFiles/tar_prog.dir

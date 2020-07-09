@@ -18,6 +18,7 @@ class SeveralFiles{
 private:
 
     std::vector<File> m_files;
+    //std::string m_parentFolder = "";
 
 public:
     bool loadFiles (File  & ) ;
@@ -30,6 +31,7 @@ public:
     bool isValid(const SeveralFiles &severalFiles) const;
 
     std::vector<File> getFiles() const { return m_files; }
+   //std::string getParentFolder() const {return m_parentFolder;}
 
 
 };

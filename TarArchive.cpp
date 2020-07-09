@@ -31,14 +31,14 @@ void zeroingFields( std::byte *fN, const int size_fN){
 }
 
 //заполнение вектора std::vector<File>
-void TarArchive::recordFieldToFile(const std::byte *fN, const int size_fN){
+void TarArchive::recordFieldToFileTar(const std::byte *fN, const int size_fN){
 
     for (int run = 0;run < size_fN; run++)
         m_fileTar.push_back( static_cast<char>(fN[run]) );
 
     
 }
-void TarArchive::recordFieldToFile(const fs::path &pathFile ){
+void TarArchive::recordFieldToFileTar(const fs::path &pathFile ){
 
 
     File file_;
@@ -63,38 +63,53 @@ void TarArchive::fillingWithZeroTo512(){
 
 
 }
+
+
 //получение метаданных с файла
 //запись в вектор std::vector<File> хидер+файл
 void TarArchive::recordTar(const fs::path &pathFile){
 
+
+    //name
     recordFieldFiles(m_fieldName.name, pathFile.filename());
 
+    //mode
     recordFieldFiles(m_fieldName.mode, static_cast<int>(static_cast<fs::perms>( fs::status( pathFile ).permissions() ) ) );
 
     struct stat info;
     stat(pathFile.c_str(), &info);
     struct passwd *pw = getpwuid(info.st_uid);
-
+    //uid
     recordFieldFiles(m_fieldName.uid, static_cast<int>(pw->pw_uid));
+    //gid
     recordFieldFiles(m_fieldName.gid, static_cast<int>(pw->pw_gid));
-
+    //size
     recordFieldFiles(m_fieldName.size, static_cast<int>( fs::file_size( pathFile) ) );
 
     auto timePoint = fs::last_write_time(pathFile);
     std::time_t ctime = fs::file_time_type::clock::to_time_t(timePoint);
+    //mtime
     recordFieldFiles(m_fieldName.mtime, static_cast<int>(ctime));
-
+    //link
     recordFieldFiles(m_fieldName.link, (fs::is_directory(pathFile) ? 0 : 1) );
+    //linkname
+//    if (!fs::is_directory(pathFile))
+//        if (pathFile.parent_path().stem() != parentFolder)
+//            recordFieldFiles(m_fieldName.linkName, pathFile.parent_path().stem());
+
+    ////----linkname
+
+
 
    //запись блока хидера (fieldName) в вектор std::vector<File>
     for (auto &p : m_fieldNameVec)
-        recordFieldToFile(p.first, p.second);
+        recordFieldToFileTar(p.first, p.second);
     
     //заполнение нулями блок
     fillingWithZeroTo512();
 
     //запись файла в вектор std::vector<File>
-    recordFieldToFile(pathFile);
+    recordFieldToFileTar(pathFile);
     fillingWithZeroTo512();
 
     //обнуление хидера (fieldName)

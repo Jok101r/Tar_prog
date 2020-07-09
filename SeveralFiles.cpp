@@ -28,10 +28,13 @@
 
         try {
 
+            //родительская папка
+            //m_parentFolder = fs::path(pathToDir).parent_path().stem();
+
             int numberFiles = 0;
             for (const auto &runDirectory : fs::directory_iterator(pathToDir)) {
 
-                File file;
+                File file;                     
 
                 if (!fs::is_directory(runDirectory))
                     if (file.load(runDirectory.path())) {
@@ -103,5 +106,6 @@
 
 
         return true;
-    }
+     }
+
 

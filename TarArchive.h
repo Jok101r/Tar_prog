@@ -39,8 +39,8 @@ private:
     std::vector<char> m_fileTar;
 
 
-    void recordFieldToFile(const std::byte *, const int );
-    void recordFieldToFile(const fs::path &);
+    void recordFieldToFileTar(const std::byte *, const int );
+    void recordFieldToFileTar(const fs::path &);
 
     void fillingWithZeroTo512();
 
