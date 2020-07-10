@@ -183,9 +183,8 @@ compile_commands.json
 # Flags for Clang Code Model
 *.cxxflags
 *.cflags
-# End of https://www.toptal.com/developers/gitignore/api/clion,qt,qtcreator
 
-#My gitigonre
+# My gitigonre
 .DS_Store
 CMakeCache.txt
 cmake_install.cmake
