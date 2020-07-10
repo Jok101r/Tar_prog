@@ -184,3 +184,10 @@ compile_commands.json
 *.cxxflags
 *.cflags
 # End of https://www.toptal.com/developers/gitignore/api/clion,qt,qtcreator
+
+#My gitigonre
+.DS_Store
+CMakeCache.txt
+cmake_install.cmake
+qtcsettings.cmake
+*.cbp
