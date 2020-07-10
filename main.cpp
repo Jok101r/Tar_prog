@@ -7,6 +7,7 @@
 namespace  fs = std::filesystem;
 int main(int argc, const char** argv)
 {
+
     GUI gui;
     GUI::EntredArgs args = gui.parseArgs(argc, argv);
 
@@ -14,8 +15,10 @@ int main(int argc, const char** argv)
     {
         case Key::ARCHIVE_TAR:
         {
+
             File file;
             SeveralFiles files;
+
             if (!fs::is_directory(args.atar.pathToFiles) ) {
                 gui.writeLine(args.atar.pathToFiles);
                 gui.writeLine("It's not directory. Try again.\n");
@@ -26,10 +29,17 @@ int main(int argc, const char** argv)
                 gui.writeLine("It's not directory. Try again.\n");
                 break;
             }
+
             if(files.load(args.atar.pathToFiles))
             {
+
+
                 TarArchive archive;
+
                 archive.append(files);
+
+
+
                 auto archiveFile = archive.archive();
 
 

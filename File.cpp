@@ -53,7 +53,6 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
     //загрузка пути файла
     bool File::load(const std::string &pathToFile) {
 
-
         if (!pathToFile.empty()) {
 
             m_pathFile = pathToFile;
@@ -64,7 +63,6 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
                 m_dataFile.push_back(*buffer);
             }
             delete[] buffer;
-
             return true;
         }
         return false;
@@ -73,7 +71,8 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
     //загрузка данных в File
     bool File::load(const std::vector<char> &file) {
 
-        for (int run = 0; run < file.size(); run++)
+
+        for (unsigned int run = 0; run < file.size(); run++)
             m_dataFile.push_back(file[run]);
         return true;
     }
@@ -82,7 +81,7 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
 //запись в класс файл File полей хидера fieldName  и содержимого файла
     bool File::loadDataField(MetaData &metaData, const std::vector<char> &file) {
 
-        for (int run = 0; run < file.size(); run++)
+        for (unsigned int run = 0; run < file.size(); run++)
             m_dataFile.push_back(file[run]);
         m_fieldName = metaData;
         return true;

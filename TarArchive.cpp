@@ -8,7 +8,7 @@
 void recordFieldFiles(std::byte *fN, std::string fieldFiles){
 
 
-    for (int a = 0; a < fieldFiles.length(); a++) {
+    for (unsigned int a = 0; a < fieldFiles.length(); a++) {
 
         //char prob = fieldFiles[a];
         fN[a] = static_cast<std::byte>(fieldFiles[a]);
@@ -20,7 +20,7 @@ void recordFieldFiles(std::byte *fN, int fieldFiles){
 
     std::stringstream numberOnString;
     numberOnString << fieldFiles;
-    for (int a = 0; a < numberOnString.str().length(); a++)
+    for (unsigned int a = 0; a < numberOnString.str().length(); a++)
         fN[a] = static_cast<std::byte>(numberOnString.str()[a]);
 }
 //обнуление полей fieldName
@@ -42,9 +42,11 @@ void TarArchive::recordFieldToFileTar(const fs::path &pathFile ){
 
 
     File file_;
-    file_.load(pathFile);
-    for(int runVec =0; runVec < file_.data().size(); runVec++ )
+    if (file_.load(pathFile)){
+        for(unsigned int runVec =0; runVec < file_.data().size(); runVec++ )
         m_fileTar.push_back(file_.data()[runVec]);
+    }
+    else {std::cout << "\nSomesting wrong..\n"; }
 
 }
 
@@ -86,6 +88,7 @@ void TarArchive::recordTar(const fs::path &pathFile){
     //size
     recordFieldFiles(m_fieldName.size, static_cast<int>( fs::file_size( pathFile) ) );
 
+
     auto timePoint = fs::last_write_time(pathFile);
     std::time_t ctime = fs::file_time_type::clock::to_time_t(timePoint);
     //mtime
@@ -97,7 +100,7 @@ void TarArchive::recordTar(const fs::path &pathFile){
 //        if (pathFile.parent_path().stem() != parentFolder)
 //            recordFieldFiles(m_fieldName.linkName, pathFile.parent_path().stem());
 
-    ////----linkname
+
 
 
 
@@ -107,14 +110,13 @@ void TarArchive::recordTar(const fs::path &pathFile){
     
     //заполнение нулями блок
     fillingWithZeroTo512();
-
     //запись файла в вектор std::vector<File>
     recordFieldToFileTar(pathFile);
     fillingWithZeroTo512();
-
     //обнуление хидера (fieldName)
     for (auto &run : m_fieldNameVec)
         zeroingFields(run.first, run.second);
+
 
 }
 
@@ -200,13 +202,16 @@ void TarArchive::append(const File &file) {
 //добавление SeveralFile в класс TarArchive
 void TarArchive::append(const SeveralFiles &severalFiles) {
 
+
     m_archiveFileTar = severalFiles;
+
 }
 
 //архивация файлов по методу .tar
 File TarArchive::archive() {
 
-    for(int runAllFiles=0; runAllFiles < m_archiveFileTar.getFiles().size();runAllFiles++)
+
+    for( unsigned int runAllFiles=0; runAllFiles < m_archiveFileTar.getFiles().size();runAllFiles++)
         recordTar(m_archiveFileTar.getFiles()[runAllFiles].getPathFile());
 
     File file;
@@ -226,7 +231,7 @@ bool TarArchive::isTar(const std::string &pathToTar) {
 
     const std::string sampleTar = ".tar";
     std::string proba = "";
-    for(int i = pathToTar.length()-4 ; i < pathToTar.length() ; ++i){
+    for(unsigned int i = pathToTar.length()-4 ; i < pathToTar.length() ; ++i){
         proba += pathToTar[i];
     }
 

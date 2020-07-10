@@ -36,7 +36,11 @@ public:
             const std::string pathToFiles;
             const std::string pathToSave;
             const std::string pathToFile;
-            Atar();
+            Atar()
+                :flag(false)
+                ,pathToFiles(" ")
+                ,pathToSave(" ")
+                ,pathToFile(" ") {}
             Atar(const bool &pFlag, const std::string &pPathToFiles, const std::string &pPathToSave, const std::string &pPathToFile)
                 :flag(pFlag)
                 ,pathToFiles(pPathToFiles)
@@ -47,7 +51,10 @@ public:
             const bool flag;
             const std::string pathToFile;
             const std::string pathToFolder;
-            Untar();
+            Untar()
+                : flag(false)
+                , pathToFile(" ")
+                , pathToFolder(" ") {}
             Untar(const bool &pFlag, const std::string &pPathToFile, const std::string &pPathToFolder)
                 : flag(pFlag)
                 , pathToFile(pPathToFile)

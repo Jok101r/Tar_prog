@@ -21,6 +21,12 @@ For example:
     tar_prog atar /admin/tmp /user/tmp archivename
 )";
 
+
+template <class T>
+T checkArgs(T &args){
+
+
+}
 //чтение данных из командной строки
 GUI::EntredArgs GUI::parseArgs(int argc, const char** argv) {
 
@@ -31,10 +37,27 @@ GUI::EntredArgs GUI::parseArgs(int argc, const char** argv) {
 
 
 
-    GUI::EntredArgs::Atar atar_(args.at("atar").asBool(),args.at("<path to files>").asString(),args.at("<path to save>").asString(),args.at("<name file>").asString());
-    GUI::EntredArgs::Untar untar_(args.at("untar").asBool(),args.at("<path to file tar>").asString(),args.at("<path to folder unarchiving>").asString());
-    GUI::EntredArgs argss(atar_,untar_);
-    return argss;
+
+    if (args.at("atar").asBool() == true){
+        GUI::EntredArgs::Atar atar_(args.at("atar").asBool(),
+                                    args.at("<path to files>").asString(),
+                                    args.at("<path to save>").asString(),
+                                    args.at("<name file>").asString());
+        GUI::EntredArgs::Untar untar_;
+        GUI::EntredArgs argss(atar_,untar_);
+        return argss;
+    }
+    if (args.at("untar").asBool() == true){
+        GUI::EntredArgs::Untar untar_(args.at("untar").asBool(),
+                                      args.at("<path to file tar>").asString(),
+                                      args.at("<path to folder unarchiving>").asString());
+        GUI::EntredArgs::Atar atar_;
+
+        GUI::EntredArgs argss(atar_,untar_);
+        return argss;
+    }
+
+
 }
 
 //ключи пользования программы
