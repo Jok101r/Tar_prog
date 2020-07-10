@@ -27,7 +27,7 @@ GUI::EntredArgs GUI::parseArgs(int argc, const char** argv) {
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
                                                                { argv + 1, argv + argc },
                                                                true,               // show help if requested
-                                                               "Archive 1.0");  // version string
+                                                               "Archive 1.1");  // version string
 
 
 
