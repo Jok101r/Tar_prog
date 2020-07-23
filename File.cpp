@@ -4,7 +4,15 @@
 
 #include "File.h"
 
+//инфотекст
+std::pair<std::string,bool> infoUnarchiveNameFiles(std::string &fileName){
 
+    std::pair<std::string,bool> result {"", false };
+    if(fileName != "")
+        result = std::pair<std::string,bool> {fileName, true};
+
+    return result;
+}
 
 void joinTo(std::byte* metaDataOne,const std::byte* metaDataTwo,const int size){
 
@@ -42,7 +50,8 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
 
     std::string byteTotype;
     for (int run = 0; run < sizeArr; run++) {
-        byteTotype += static_cast<char>(fN[run]);
+        if(fN[run] != static_cast<std::byte>(0))
+            byteTotype += static_cast<char>(fN[run]);
     }
     std::stringstream ss;
     ss << byteTotype;
@@ -53,16 +62,27 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
     //загрузка пути файла
     bool File::load(const std::string &pathToFile) {
 
-        if (!pathToFile.empty()) {
+        //если директория
 
-            m_pathFile = pathToFile;
-            std::fstream file(m_pathFile);
-            char *buffer = new char[1];
-            while (!file.eof()) {
-                file.read(buffer, 1);
-                m_dataFile.push_back(*buffer);
+        if(fs::is_directory(pathToFile)){
+            m_pathFile=pathToFile;
+            return true;
+        }
+
+        // если файл
+        if(!fs::is_directory(pathToFile)){
+            if (!pathToFile.empty()) {
+
+                m_pathFile = pathToFile;
+                std::fstream file(m_pathFile);
+                char *buffer = new char[1];
+                while (!file.eof()) {
+                    file.read(buffer, 1);
+                    m_dataFile.push_back(*buffer);
+                }
+                delete[] buffer;
+
             }
-            delete[] buffer;
             return true;
         }
         return false;
@@ -112,22 +132,52 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
             //не знаю как обойти этот момент
             int a;
             std::string b;
+            fs::path pathToDir_=pathToDir;
+            std::string nameFolder="";
+
+
+            nameFolder = byteToType(b,m_fieldName.linkName,sizeof(file.m_fieldName.linkName) / sizeof(file.m_fieldName.linkName[0]));
+
+
+
+            //имя
             std::string name_file = byteToType(b, m_fieldName.name,
                     sizeof(file.m_fieldName.name) / sizeof(file.m_fieldName.name[0]) );
+
+            auto resultUnarchiveFile = infoUnarchiveNameFiles(name_file);
+            if(resultUnarchiveFile.second)
+                std::cout << "Now unarchive " << name_file << " ..." << std::endl;
+            else
+                std::cout << "Something wrong... maybe try again? " << std::endl;
+
+            //создание подкаталогов
+            if  (!nameFolder.empty())
+                pathToDir_ /= nameFolder;
+            if( 1 == byteToType(a,m_fieldName.link,sizeof(file.m_fieldName.link) / sizeof(file.m_fieldName.link[0])) )
             {
-                std::ofstream newFile(pathToDir + name_file);
+                std::ofstream newFile(pathToDir_ / name_file);
                 for (auto &run : m_dataFile)
                     newFile << run;
                 newFile.close();
             }
 
-            fs::permissions(pathToDir + name_file,
+            if( 0 == byteToType(a,m_fieldName.link,sizeof(file.m_fieldName.link) / sizeof(file.m_fieldName.link[0])) )
+            {
+                pathToDir_/=name_file;
+                if ( !fs::exists( pathToDir_ ) ){
+                    fs::create_directory(pathToDir_);
+                }
+
+            }
+            // uid+gid or mode/
+            fs::permissions(pathToDir_ / name_file,
                             static_cast<fs::perms> (byteToType(a, m_fieldName.mode,
                                     sizeof(m_fieldName.mode) / sizeof(m_fieldName.mode[0]))));
+            //mtime
             std::chrono::time_point timePoint = fs::file_time_type::clock::from_time_t(
                     byteToType(a, m_fieldName.mtime,
                                sizeof(m_fieldName.mtime) / sizeof(m_fieldName.mtime[0])));
-            fs::last_write_time(pathToDir + name_file, timePoint);
+            fs::last_write_time(pathToDir_ / name_file, timePoint);
 
             return true;
         }
@@ -149,47 +199,38 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
     }
     bool File::isValid(const File &file) const {
 
+        //адаптировать для папки
+        if  ( '1' == static_cast<char>(m_fieldName.link[0]))
+            for(auto &run_mode : m_fieldName.mode) {
+                if ('1' == static_cast<char>(run_mode) || '2' == static_cast<char>(run_mode) ||
+                      '3' == static_cast<char>(run_mode) || '4' == static_cast<char>(run_mode) ||
+                      '5' == static_cast<char>(run_mode) || '6' == static_cast<char>(run_mode) ||
+                      '7' == static_cast<char>(run_mode) || '8' == static_cast<char>(run_mode) ||
+                      '9' == static_cast<char>(run_mode))
+                    break;
+                else return false;
+            }
 
-        if (m_dataFile.empty())
-            return false;
-        for(auto &run_mode : m_fieldName.mode) {
-            if ('1' == static_cast<char>(run_mode) || '2' == static_cast<char>(run_mode) ||
-                  '3' == static_cast<char>(run_mode) || '4' == static_cast<char>(run_mode) ||
-                  '5' == static_cast<char>(run_mode) || '6' == static_cast<char>(run_mode) ||
-                  '7' == static_cast<char>(run_mode) || '8' == static_cast<char>(run_mode) ||
-                  '9' == static_cast<char>(run_mode))
+
+
+        for(auto &run_uid : m_fieldName.uid) {
+            if ('1' == static_cast<char>(run_uid) || '2' == static_cast<char>(run_uid) ||
+                  '3' == static_cast<char>(run_uid) || '4' == static_cast<char>(run_uid) ||
+                  '5' == static_cast<char>(run_uid) || '6' == static_cast<char>(run_uid) ||
+                  '7' == static_cast<char>(run_uid) || '8' == static_cast<char>(run_uid) ||
+                  '9' == static_cast<char>(run_uid))
                 break;
             else return false;
         }
 
-        for(auto &run_mode : m_fieldName.uid) {
-            if ('1' == static_cast<char>(run_mode) || '2' == static_cast<char>(run_mode) ||
-                  '3' == static_cast<char>(run_mode) || '4' == static_cast<char>(run_mode) ||
-                  '5' == static_cast<char>(run_mode) || '6' == static_cast<char>(run_mode) ||
-                  '7' == static_cast<char>(run_mode) || '8' == static_cast<char>(run_mode) ||
-                  '9' == static_cast<char>(run_mode))
+        for(auto &run_gid : m_fieldName.gid) {
+            if ('1' == static_cast<char>(run_gid) || '2' == static_cast<char>(run_gid) ||
+                  '3' == static_cast<char>(run_gid) || '4' == static_cast<char>(run_gid) ||
+                  '5' == static_cast<char>(run_gid) || '6' == static_cast<char>(run_gid) ||
+                  '7' == static_cast<char>(run_gid) || '8' == static_cast<char>(run_gid) ||
+                  '9' == static_cast<char>(run_gid))
                 break;
             else return false;
-        }
-
-        for(auto &run_mode : m_fieldName.gid) {
-            if ('1' == static_cast<char>(run_mode) || '2' == static_cast<char>(run_mode) ||
-                  '3' == static_cast<char>(run_mode) || '4' == static_cast<char>(run_mode) ||
-                  '5' == static_cast<char>(run_mode) || '6' == static_cast<char>(run_mode) ||
-                  '7' == static_cast<char>(run_mode) || '8' == static_cast<char>(run_mode) ||
-                  '9' == static_cast<char>(run_mode))
-                break;
-            else return false;
-        }
-
-        if( fs::is_directory(m_pathFile) ) {
-            if (!('0' == static_cast<char> (m_fieldName.link[0])))
-                return false;
-        }
-        else {
-            if (!('1' == static_cast<char> (m_fieldName.link[0])))
-            return false;
-
         }
 
     return true;

@@ -10,7 +10,6 @@ void recordFieldFiles(std::byte *fN, std::string fieldFiles){
 
     for (unsigned int a = 0; a < fieldFiles.length(); a++) {
 
-        //char prob = fieldFiles[a];
         fN[a] = static_cast<std::byte>(fieldFiles[a]);
 
     }
@@ -43,8 +42,8 @@ void TarArchive::recordFieldToFileTar(const fs::path &pathFile ){
 
     File file_;
     if (file_.load(pathFile)){
-        for(unsigned int runVec =0; runVec < file_.data().size(); runVec++ )
-        m_fileTar.push_back(file_.data()[runVec]);
+        for (auto &runVec : file_.data())
+            m_fileTar.push_back(runVec);
     }
     else {std::cout << "\nSomesting wrong..\n"; }
 
@@ -69,7 +68,7 @@ void TarArchive::fillingWithZeroTo512(){
 
 //получение метаданных с файла
 //запись в вектор std::vector<File> хидер+файл
-void TarArchive::recordTar(const fs::path &pathFile){
+void TarArchive::recordTar(const fs::path &pathFile, const std::string &parentNameFolder){
 
 
     //name
@@ -82,12 +81,13 @@ void TarArchive::recordTar(const fs::path &pathFile){
     stat(pathFile.c_str(), &info);
     struct passwd *pw = getpwuid(info.st_uid);
     //uid
+
     recordFieldFiles(m_fieldName.uid, static_cast<int>(pw->pw_uid));
     //gid
     recordFieldFiles(m_fieldName.gid, static_cast<int>(pw->pw_gid));
     //size
-    recordFieldFiles(m_fieldName.size, static_cast<int>( fs::file_size( pathFile) ) );
-
+    if(!fs::is_directory(pathFile))
+        recordFieldFiles(m_fieldName.size, static_cast<int>( fs::file_size( pathFile) ) );
 
     auto timePoint = fs::last_write_time(pathFile);
     std::time_t ctime = fs::file_time_type::clock::to_time_t(timePoint);
@@ -96,9 +96,11 @@ void TarArchive::recordTar(const fs::path &pathFile){
     //link
     recordFieldFiles(m_fieldName.link, (fs::is_directory(pathFile) ? 0 : 1) );
     //linkname
-//    if (!fs::is_directory(pathFile))
-//        if (pathFile.parent_path().stem() != parentFolder)
-//            recordFieldFiles(m_fieldName.linkName, pathFile.parent_path().stem());
+
+    if (pathFile.parent_path().stem() != parentNameFolder)
+        recordFieldFiles(m_fieldName.linkName, pathFile.parent_path().stem());
+
+
 
 
 
@@ -107,15 +109,18 @@ void TarArchive::recordTar(const fs::path &pathFile){
    //запись блока хидера (fieldName) в вектор std::vector<File>
     for (auto &p : m_fieldNameVec)
         recordFieldToFileTar(p.first, p.second);
-    
+
     //заполнение нулями блок
     fillingWithZeroTo512();
     //запись файла в вектор std::vector<File>
-    recordFieldToFileTar(pathFile);
+    if (!fs::is_directory(pathFile))
+        recordFieldToFileTar(pathFile);
     fillingWithZeroTo512();
+
     //обнуление хидера (fieldName)
     for (auto &run : m_fieldNameVec)
         zeroingFields(run.first, run.second);
+
 
 
 }
@@ -154,9 +159,10 @@ int TarArchive::multiplicity512(int sizeFile){
 // отделение самого файла
 void TarArchive::parsingTar(){
 
-    for(int run = 0; run < m_file.data().size()-1; run++){
+    for(unsigned int run = 0; run < m_file.data().size()-1; run++){
 
         //кажется костыль
+        //запись метаданных
         for (auto &runVec : m_fieldNameVec) {
 
             char *bufferField = new char[runVec.second];
@@ -168,21 +174,27 @@ void TarArchive::parsingTar(){
             delete[] bufferField;
         }
 
+
         run +=multiplicity512(run);
         int a;
+        //size
         int size_file = byteToType(a, m_fieldName.size, sizeof(m_fieldName.size) / sizeof(m_fieldName.size[0]));
 
+
+        //data file
         std::vector<char> fileChar;
         for (int i = 0; i < size_file; i++){
             fileChar.push_back(m_file.data()[run]);
             run++;
         }
+
         File fileWithField;
 
         //загрука метаданных в хидер файла
         fileWithField.loadDataField(m_fieldName, fileChar);
         if(!m_archiveFileTar.loadFiles(fileWithField))
             std::cout << "Something wrong. Sorry. Error 1-0";
+
 
         run += multiplicity512( run);
 
@@ -210,9 +222,12 @@ void TarArchive::append(const SeveralFiles &severalFiles) {
 //архивация файлов по методу .tar
 File TarArchive::archive() {
 
+    for (auto &run : m_fieldNameVec)
+        zeroingFields(run.first, run.second);
+
 
     for( unsigned int runAllFiles=0; runAllFiles < m_archiveFileTar.getFiles().size();runAllFiles++)
-        recordTar(m_archiveFileTar.getFiles()[runAllFiles].getPathFile());
+        recordTar(m_archiveFileTar.getFiles()[runAllFiles].getPathFile(), m_archiveFileTar.getParentFolder());
 
     File file;
     file.load(m_fileTar);
@@ -222,6 +237,9 @@ File TarArchive::archive() {
 }
 //разархивация файла по методу .tar
 SeveralFiles TarArchive::unarchive() {
+
+    for (auto &run : m_fieldNameVec)
+        zeroingFields(run.first, run.second);
 
     parsingTar();
     return m_archiveFileTar;

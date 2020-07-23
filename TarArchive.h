@@ -45,7 +45,7 @@ private:
     void fillingWithZeroTo512();
 
     //получение данных файлов
-    void recordTar(const fs::path &);
+    void recordTar(const fs::path &, const std::string &);
 
 
     template <class T>

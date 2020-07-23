@@ -6,6 +6,7 @@
 
 
 
+    //инфотекст
     std::pair<int,bool> checkNumberFiles(int inputNumber){
 
         std::pair<int,bool> result {0, false };
@@ -29,18 +30,19 @@
         try {
 
             //родительская папка
-            //m_parentFolder = fs::path(pathToDir).parent_path().stem();
+            m_parentNameFolder = fs::path(pathToDir).parent_path().stem();
 
             int numberFiles = 0;
-            for (const auto &runDirectory : fs::directory_iterator(pathToDir)) {
+            for (const auto &runDirectory : fs::recursive_directory_iterator(pathToDir)) {
 
-                File file;                     
+                File file;
 
-                if (!fs::is_directory(runDirectory))
+                //if (!fs::is_directory(runDirectory))
                     if (file.load(runDirectory.path())) {
                         numberFiles++;
                         m_files.push_back(file);
                     }
+
             }
 
             auto resultnumberFiles = checkNumberFiles(numberFiles);
@@ -95,12 +97,11 @@
     //проверка на существование файла
     bool SeveralFiles::isValid(const SeveralFiles &severalFiles) const {
 
-        //корректно?
+
         if (m_files.empty())
             return false;
-
         for(auto &run_m_files : m_files) {
-            if (!(run_m_files.isValid(run_m_files)) )
+            if (    !(run_m_files.isValid(run_m_files)) )
                 return false;
         }
 
