@@ -23,8 +23,6 @@ void joinTo(std::byte* metaDataOne,const std::byte* metaDataTwo,const int size){
 
 struct MetaData & MetaData::operator=(const MetaData *metaData) {
 
-
-    //корректно?
     if (this != metaData) {
 
         joinTo(this->name,metaData->name, 100);
@@ -126,10 +124,7 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
     }
     bool File::save(const File &file, const std::string & pathToDir){
 
-        //так можно? пока еще плохо понимаю как исключения использоваться
-
         try {
-            //не знаю как обойти этот момент
             int a;
             std::string b;
             fs::path pathToDir_=pathToDir;
@@ -192,7 +187,6 @@ T byteToType(T verf, std::byte fN[], int sizeArr)  {
     //проверка на существование файла
     bool File::isValid() const {
 
-        //корректно?
         if (m_dataFile.empty())
             return false;
         return true;
