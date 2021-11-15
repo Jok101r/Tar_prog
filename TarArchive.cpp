@@ -58,7 +58,6 @@ void TarArchive::fillingWithZeroTo512(){
     }
 
     byte -= m_fileTar.size();
-    //не знаю как по другому сделать
     for (int run = 0; run<byte; run++)
         m_fileTar.push_back((char)0);
 
@@ -100,12 +99,6 @@ void TarArchive::recordTar(const fs::path &pathFile, const std::string &parentNa
     if (pathFile.parent_path().stem() != parentNameFolder)
         recordFieldFiles(m_fieldName.linkName, pathFile.parent_path().stem());
 
-
-
-
-
-
-
    //запись блока хидера (fieldName) в вектор std::vector<File>
     for (auto &p : m_fieldNameVec)
         recordFieldToFileTar(p.first, p.second);
@@ -124,8 +117,6 @@ void TarArchive::recordTar(const fs::path &pathFile, const std::string &parentNa
 
 
 }
-
-//не понятно, почему в параметрах нужно указывать Т
 //получение данных из полей fieldName
 template <class T>
 T TarArchive::byteToType(T verf, std::byte fN[], int sizeArr) const {
@@ -161,7 +152,6 @@ void TarArchive::parsingTar(){
 
     for(unsigned int run = 0; run < m_file.data().size()-1; run++){
 
-        //кажется костыль
         //запись метаданных
         for (auto &runVec : m_fieldNameVec) {
 
