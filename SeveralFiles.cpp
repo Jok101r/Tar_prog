@@ -36,8 +36,6 @@
             for (const auto &runDirectory : fs::recursive_directory_iterator(pathToDir)) {
 
                 File file;
-
-                //if (!fs::is_directory(runDirectory))
                     if (file.load(runDirectory.path())) {
                         numberFiles++;
                         m_files.push_back(file);
@@ -61,8 +59,6 @@
     }
 
     template <class T>
-    //не понятно, почему в параметрах нужно указывать Т
-    //дублирование метода
     T SeveralFiles::byteToType(T verf, std::byte fN[], int sizeArr) const {
 
         std::string byteTotype;
@@ -82,8 +78,6 @@
 
         try {
             for (auto &runVecSeveralFiles : m_files) {
-
-                //я тут понимаю, что можно отправлять без 1ого параметра, но иначе будет использоваться другой метод
                 runVecSeveralFiles.save(runVecSeveralFiles, pathToDir);
             }
             return true;
